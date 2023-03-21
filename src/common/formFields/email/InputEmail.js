@@ -2,6 +2,7 @@ import React from 'react';
 import { EmailInput } from './styled';
 
 function InputEmail(props) {
+  console.log(props);
   return (
     <EmailInput>
       <label className='font-SfPro font-normal text-base leading-5 text-primaryBlack block mb-2 tracking-wide'>
@@ -14,6 +15,7 @@ function InputEmail(props) {
         placeholder={props.placeholder}
         name={props.name}
         value={props.value}
+        required
       />
     </EmailInput>
   );

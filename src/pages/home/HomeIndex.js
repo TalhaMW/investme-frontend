@@ -1,13 +1,13 @@
-import React from 'react'
-import HeroSection from './components/HeroSection'
+import React from 'react';
+import HeroSection from './components/HeroSection';
 
-import { HomePageContainer } from './styled'
+import { HomePageContainer } from './styled';
 function homeIndex() {
   return (
     <HomePageContainer>
-        <HeroSection/>
+      <HeroSection />
     </HomePageContainer>
-  )
+  );
 }
 
-export default homeIndex
+export default homeIndex;

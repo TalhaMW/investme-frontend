@@ -1,4 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 import HomeIndex from './pages/home/HomeIndex';
 import Login from './pages/auth/Login';
@@ -7,19 +8,24 @@ import ForgetPassword from './pages/auth/ForgetPassword';
 import Profile from './pages/profile/Profile';
 import PrivateComponent from './pages/PrivateComponent';
 
+import { useContext } from 'react';
+
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import ScrollTop from './common/scrollTop/ScrollTop';
 
+import MainHeader from './common/MainHeader/MainHeader';
+
+import LoginProvider from './context/loginContext';
+import { LoginContext } from './context/loginContext';
+import { Home } from '@mui/icons-material';
+import { ToastContainer } from 'react-toastify';
+
 function App() {
+  const { loginToken } = useContext(LoginContext);
+  console.log({ loginToken });
   console.log('token APP  ', localStorage.getItem('jwtToken'));
   return (
-    // <div className="App">
-    //   {/* <HomeIndex/> */}
-    //   {/* <Login/> */}
-    //   <Signup/>
-    // </div>
-
     <Router>
       <div className='App'>
         <ScrollTop />
@@ -32,6 +38,7 @@ function App() {
             path='/login'
             element={<Login />}
           />
+
           <Route
             path='/signup'
             element={<Signup />}
@@ -40,17 +47,17 @@ function App() {
             path='/forget-password'
             element={<ForgetPassword />}
           />
-
           <Route
             path='/profile'
             element={
-              <PrivateComponent token={localStorage.getItem('jwtToken')}>
+              <PrivateComponent token={loginToken}>
                 <Profile />
               </PrivateComponent>
             }
           />
         </Routes>
       </div>
+      <ToastContainer />
     </Router>
   );
 }

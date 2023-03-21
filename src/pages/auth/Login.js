@@ -7,22 +7,38 @@ import InputPassword from '../../common/formFields/password/InputPassword';
 import CheckboxLable from '../../common/formFields/checkboxLabel/CheckboxLable';
 import PrimaryBlueBtn from '../../common/buttons/PrimaryBlueBtn';
 
-import { useEffect } from 'react';
+import { useContext } from 'react';
+import { LoginContext } from '../../context/loginContext';
 
-import { Navigate, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { Slide } from 'react-toastify';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+// import { Navigate, useNavigate } from 'react-router-dom';
 function Login() {
   const [formData, setFormData] = useState({ email: '', password: '' });
-  const [errorMsg, setErrorMsg] = useState('');
+
+  const notify = (msg) => {
+    toast.dismiss();
+    // toast(msg, { autoClose: 500, closeOnClick: true });
+
+    toast.success(msg, {
+      position: toast.POSITION.TOP_CENTER,
+      transition: Slide,
+      autoClose: 1000,
+      hideProgressBar: true,
+      pauseOnHover: true,
+    });
+  };
+
+  const { setLoginToken, loginToken } = useContext(LoginContext);
 
   const navigate = useNavigate();
-
-  console.log(formData);
 
   const { email, password } = formData;
 
   const inputChangeHandler = (e) => {
-    console.log(e.target.name);
-
     setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
@@ -31,7 +47,7 @@ function Login() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    console.log('clicked');
+
     try {
       const response = await fetch('http://localhost:9000/api/user/login', {
         method: 'POST',
@@ -40,27 +56,42 @@ function Login() {
         },
         body: JSON.stringify(formData),
       });
-      console.log(response.status);
 
       const responseData = await response.json();
       if (response.status === 200) {
-        await window.localStorage.setItem('jwtToken', responseData);
+        // await window.localStorage.setItem('jwtToken', responseData);
+        await localStorage.setItem('jwtToken', responseData);
+        setLoginToken(localStorage.getItem('jwtToken'));
         navigate('/profile');
+        notify('You are successfully Login');
       } else {
         if (responseData.message) {
-          setErrorMsg({ message: JSON.parse(responseData.message) });
+          JSON.parse(responseData.message).forEach((er) => {
+            toast.dismiss();
+            toast.error(er.msg, {
+              position: toast.POSITION.TOP_CENTER,
+              transition: Slide,
+              autoClose: 800,
+              hideProgressBar: true,
+              pauseOnHover: true,
+            });
+          });
         } else {
-          setErrorMsg(responseData);
+          console.log({ responseData });
+          toast.dismiss();
+          toast.error('Invalid Credentials', {
+            position: toast.POSITION.TOP_CENTER,
+            transition: Slide,
+            autoClose: 100,
+            hideProgressBar: true,
+            pauseOnHover: true,
+          });
         }
       }
     } catch (e) {
       // console.log('-->> ', e.message);
     }
   };
-
-  console.log({ token: window.localStorage.getItem('jwtToken') });
-
-  console.log({ errorMsg });
 
   return (
     <AuthGrid>
@@ -111,16 +142,7 @@ function Login() {
                 id='Accountant'
               />
             </div>
-            {/* <p className='mt-8'>{errorMsg}</p> */}
-            <div className='mt-8'>
-              {errorMsg.message ? (
-                errorMsg.message.map((msg) => {
-                  return <p>{msg.msg}</p>;
-                })
-              ) : (
-                <p>{errorMsg}</p>
-              )}
-            </div>
+
             <div className='mt-8'>
               <InputEmail
                 label='Email Address'

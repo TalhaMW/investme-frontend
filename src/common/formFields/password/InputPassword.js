@@ -38,6 +38,8 @@ function InputPassword(props) {
         placeholder={props.placeholder}
         name={props.name}
         onChange={props.inputChangeHandler}
+        value={props.value}
+        required
         endAdornment={
           <InputAdornment position='end'>
             <IconButton
