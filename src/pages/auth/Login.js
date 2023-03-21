@@ -49,13 +49,16 @@ function Login() {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:9000/api/user/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        'https://6d35-103-116-251-41.in.ngrok.io/api/user/login',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       const responseData = await response.json();
       if (response.status === 200) {
